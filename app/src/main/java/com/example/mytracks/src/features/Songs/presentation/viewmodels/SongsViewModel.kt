@@ -19,6 +19,8 @@ class SongsViewModel(
     private val _currentStream = MutableStateFlow<String?>(null)
     val currentStream = _currentStream.asStateFlow()
 
+    private val _playingTrackId = MutableStateFlow<Long?>(null)
+    val playingTrackId = _playingTrackId.asStateFlow()
 
     fun loadSongs(token: String) {
         _uiState.value = SongsUIState(isLoading = true)
@@ -31,6 +33,12 @@ class SongsViewModel(
                     _uiState.value = SongsUIState(isLoading = false, error = e.message)
                 }
         }
+    }
+
+
+    fun onSongClicked(trackId: Long) {
+        _playingTrackId.value =
+            if (_playingTrackId.value == trackId) null else trackId
     }
 
 }

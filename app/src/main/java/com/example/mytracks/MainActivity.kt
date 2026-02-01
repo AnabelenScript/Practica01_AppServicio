@@ -1,5 +1,6 @@
 package com.example.mytracks
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -29,6 +30,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var songsViewModel: SongsViewModel
     lateinit var appContainer: AppContainer
 
+    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -67,7 +69,8 @@ class MainActivity : ComponentActivity() {
                         }
                         SongsScreen(
                             uiState = songsUiState,
-                            token = activeToken
+                            token = activeToken,
+                            viewModel = songsViewModel
                         )
 
                     } else {

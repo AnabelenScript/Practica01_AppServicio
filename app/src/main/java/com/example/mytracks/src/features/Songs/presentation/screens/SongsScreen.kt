@@ -26,6 +26,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mytracks.src.features.Songs.presentation.components.AudioPlayer
 import com.example.mytracks.src.features.Songs.presentation.components.SongCard
 import com.example.mytracks.src.features.Songs.presentation.viewmodels.SongsViewModel
@@ -33,9 +35,11 @@ import com.example.mytracks.src.features.Songs.presentation.viewmodels.SongsView
 @Composable
 fun SongsScreen(
     uiState: SongsUIState,
-    token: String
+    token: String,
+    viewModel: SongsViewModel
 ) {
     var currentStreamUrl by remember { mutableStateOf<String?>(null) }
+    val playingTrackId by viewModel.playingTrackId.collectAsStateWithLifecycle()
 
 
     val backgroundGradient = Brush.verticalGradient(
@@ -51,31 +55,20 @@ fun SongsScreen(
             .fillMaxSize()
             .background(backgroundGradient)
     ) {
-        Column(modifier = Modifier.padding(20.dp)) {
+        Column(modifier = Modifier.padding(vertical = 40.dp, horizontal = 10.dp),
+
+
+        ) {
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(bottom = 16.dp)
             ) {
-                Surface(
-                    modifier = Modifier.size(48.dp),
-                    shape = RoundedCornerShape(12.dp),
-                    color = Color(0xFF673AB7).copy(alpha = 0.15f)
-                ) {
-                    Box(contentAlignment = Alignment.Center) {
-                        Icon(
-                            imageVector = Icons.Default.MusicNote,
-                            contentDescription = null,
-                            tint = Color(0xFF673AB7),
-                            modifier = Modifier.size(28.dp)
-                        )
-                    }
-                }
 
                 Spacer(modifier = Modifier.width(12.dp))
 
                 Text(
-                    text = "Plataforma de Streaming",
+                    text = "Mis canciones",
                     style = MaterialTheme.typography.headlineMedium.copy(
                         fontWeight = FontWeight.Bold
                     ),
@@ -113,8 +106,10 @@ fun SongsScreen(
                         items(uiState.songs) { track ->
                             SongCard(
                                 track = track,
+                                isPlaying = playingTrackId == track.id,
                                 onPlayClick = {
                                     currentStreamUrl = track.stream_url
+                                    viewModel.onSongClicked(track.id)
                                 }
                             )
                         }

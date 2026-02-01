@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
@@ -39,16 +40,6 @@ fun SongCard(
         label = "scale"
     )
 
-    val infiniteTransition = rememberInfiniteTransition(label = "rotation")
-    val rotation by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = if (isPlaying) 360f else 0f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(20000, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart
-        ),
-        label = "rotation"
-    )
     val cardGradient = Brush.horizontalGradient(
         colors = listOf(
             Color(0xFFF8F9FA),
@@ -120,25 +111,22 @@ fun SongCard(
 
                     Spacer(modifier = Modifier.height(4.dp))
                     if (isPlaying) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
+                        Column(
+                            modifier = Modifier.fillMaxWidth()
                         ) {
-                            repeat(3) { index ->
-                                PlayingIndicator(
-                                    delay = index * 100,
-                                    color = Color(0xFF5E35B1)
-                                )
-                                if (index < 2) Spacer(modifier = Modifier.width(3.dp))
-                            }
                             Spacer(modifier = Modifier.width(8.dp))
+
                             Text(
                                 text = "Reproduciendo",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = Color(0xFF5E35B1),
-                                fontWeight = FontWeight.Medium
+                                fontWeight = FontWeight.Medium,
+                                textAlign = TextAlign.Start,
+                                modifier = Modifier.fillMaxWidth()
                             )
                         }
                     }
+
                 }
 
                 Spacer(modifier = Modifier.width(12.dp))
@@ -164,33 +152,4 @@ fun SongCard(
             }
         }
     }
-}
-
-@Composable
-private fun PlayingIndicator(
-    delay: Int,
-    color: Color
-) {
-    val infiniteTransition = rememberInfiniteTransition(label = "bar")
-    val height by infiniteTransition.animateFloat(
-        initialValue = 4f,
-        targetValue = 16f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(
-                durationMillis = 500,
-                delayMillis = delay,
-                easing = FastOutSlowInEasing
-            ),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "height"
-    )
-
-    Box(
-        modifier = Modifier
-            .width(3.dp)
-            .height(height.dp)
-            .clip(RoundedCornerShape(2.dp))
-            .background(color)
-    )
 }
